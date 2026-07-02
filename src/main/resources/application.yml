@@ -1,6 +1,14 @@
 server:
-    port: 8080
+  # Tətbiqimizin işləyəcəyi portu təyin edir.
+  # Django-da standart olaraq 'python manage.py runserver' edəndə layihə 8000 portunda qalxır.
+  # Spring Boot-da isə daxili Tomcat serveri defolt olaraq 8080 portunu istifadə edir. 
+  # İstəsən bunu 8000 və ya başqa portla əvəz edə bilərsən.
+  port: 8080
 
 spring:
-    application:
-        name: SprintFries
+  application:
+    # Layihənin qlobal adını (ID-sini) təyin edir.
+    # Django-da birbaşa layihə qovluğunun adı (məsələn, 'taskfries') nədirsə, sistem onu əsas götürür.
+    # Spring dünyasında isə bu ad gələcəkdə loqlarda, mikroxidmətlər arası əlaqədə 
+    # və ya cloud konfiqurasiyalarında bu tətbiqi tanımaq üçün istifadə olunacaq mərkəzi addır.
+    name: SprintFries
