@@ -24,9 +24,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      # ddl-auto: Django-dakı makemigrations/migrate məntiqini idarə edir. 
-      # 'update' -> Modellərdə dəyişiklik olanda cədvəlləri avtomatik yeniləyir.
-      ddl-auto: update
+      # Multi-tenant qoşulduğu üçün ddl-auto-nu 'none' edirik.
+      # Çünki Hibernate tətbiq qalxanda hansı tenant şemalarını yaradacağını bilmir.
+      ddl-auto: none
     show-sql: true  # Arxa planda dönən SQL sorğularını terminalda görmək üçün (Django-dakı connection.queries kimi)
     properties:
       hibernate:
