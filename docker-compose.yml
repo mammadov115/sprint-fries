@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Bizim mərkəzi PostgreSQL verilənlər bazası xidmətimiz
+  postgres_db:
+    image: postgres:16-alpine
+    container_name: sprintfries_postgres
+    environment:
+      POSTGRES_USER: sprintfries_user
+      POSTGRES_PASSWORD: sprintfries_password
+      POSTGRES_DB: sprintfries_main  # Bizim mərkəzi (public) verilənlər bazamız
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Bazaya vizual baxa bilmək üçün PgAdmin (Django-dakı daxili Admin paneli kimi bir rahatlıq)
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: sprintfries_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@sprintfries.com
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+    ports:
+      - "5050:80"  # Brauzerdə http://localhost:5050 yazaraq daxil olacağıq
+    depends_on:
+      - postgres_db
+
+volumes:
+  postgres_data:

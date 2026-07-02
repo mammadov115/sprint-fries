@@ -12,3 +12,22 @@ spring:
     # Spring dünyasında isə bu ad gələcəkdə loqlarda, mikroxidmətlər arası əlaqədə 
     # və ya cloud konfiqurasiyalarında bu tətbiqi tanımaq üçün istifadə olunacaq mərkəzi addır.
     name: SprintFries
+
+  # Verilənlər bazası konfiqurasiyası (Django settings.py daxilindəki DATABASES dict-i ilə eynidir)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sprintfries_main  # jdbc:postgresql:// -> Django-dakı ENGINE kimidir
+    username: sprintfries_user
+    password: sprintfries_password
+    driver-class-name: org.postgresql.Driver
+
+  # JPA və Hibernate tənzimləmələri
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      # ddl-auto: Django-dakı makemigrations/migrate məntiqini idarə edir. 
+      # 'update' -> Modellərdə dəyişiklik olanda cədvəlləri avtomatik yeniləyir.
+      ddl-auto: update
+    show-sql: true  # Arxa planda dönən SQL sorğularını terminalda görmək üçün (Django-dakı connection.queries kimi)
+    properties:
+      hibernate:
+        format_sql: true # SQL kodlarını terminalda daha oxunqlu formatda çıxarır
