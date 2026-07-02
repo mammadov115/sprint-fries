@@ -6,9 +6,9 @@ services:
     image: postgres:16-alpine
     container_name: sprintfries_postgres
     environment:
-      POSTGRES_USER: sprintfries_user
-      POSTGRES_PASSWORD: sprintfries_password
-      POSTGRES_DB: sprintfries_main  # Bizim mərkəzi (public) verilənlər bazamız
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}  # Bizim mərkəzi (public) verilənlər bazamız
     ports:
       - "5432:5432"
     volumes:
@@ -19,8 +19,8 @@ services:
     image: dpage/pgadmin4
     container_name: sprintfries_pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@sprintfries.com
-      PGADMIN_DEFAULT_PASSWORD: adminpassword
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "5050:80"  # Brauzerdə http://localhost:5050 yazaraq daxil olacağıq
     depends_on:

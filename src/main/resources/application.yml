@@ -15,9 +15,9 @@ spring:
 
   # Verilənlər bazası konfiqurasiyası (Django settings.py daxilindəki DATABASES dict-i ilə eynidir)
   datasource:
-    url: jdbc:postgresql://localhost:5432/sprintfries_main  # jdbc:postgresql:// -> Django-dakı ENGINE kimidir
-    username: sprintfries_user
-    password: sprintfries_password
+    url: jdbc:postgresql://localhost:5432/${DB_NAME:sprintfries_main}  # jdbc:postgresql:// -> Django-dakı ENGINE kimidir
+    username: ${DB_USER:sprintfries_user}
+    password: ${DB_PASSWORD:sprintfries_password}
     driver-class-name: org.postgresql.Driver
 
   # JPA və Hibernate tənzimləmələri
