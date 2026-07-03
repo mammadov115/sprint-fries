@@ -19,14 +19,14 @@ public class TenantController {
     // DRF-dəki def post(self, request): metodudur
     // @RequestBody anonsu gələn HTTP body-dəki JSON-ı avtomatik TenantRegisterDto-ya çevirir (De-serialization).
     @PostMapping("/register")
-    public ResponseEntity<Tenant> register(@RequestBody TenantRegisterDto dto) {
+    public ResponseEntity<?> register(@RequestBody TenantRegisterDto dto) {
         try {
             Tenant newTenant = tenantService.registerTenant(dto);
-            // Response status: 21 Created və body olaraq Tenant datası qaytarılır
+            // Response status: 201 Created və body olaraq Tenant datası qaytarılır
             return new ResponseEntity<>(newTenant, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            // DRF-dəki return Response({"error": ...}, status=status.HTTP_400_BAD_REQUEST)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            // Xəta mesajını geri qaytarırıq ki, müştəri nəyin səhv olduğunu bilsin
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         }
     }
 }

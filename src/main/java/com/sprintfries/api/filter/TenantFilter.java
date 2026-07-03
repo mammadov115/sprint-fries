@@ -26,17 +26,33 @@ public class TenantFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         
-        // ServletRequest-i HTTP-yə spesifik olan HttpServletRequest-ə cast edirik ki, Header-ləri oxuya bilək
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         
-        // Django-dakı `request.headers.get('X-Tenant-ID')` məntiqi ilə eynidir.
-        String tenantId = httpRequest.getHeader(TENANT_HEADER);
+        // 1. Subdomen vasitəsilə tenantı tapırıq (məs: company.sprintfries.com)
+        String serverName = httpRequest.getServerName();
+        String tenantId = null;
 
+        if (serverName != null && !serverName.equals("localhost") && !serverName.equals("127.0.0.1")) {
+            String[] parts = serverName.split("\\.");
+            // Əgər ən azı 3 hissə varsa (sub.domain.com), birinci hissəni subdomen götürürük
+            if (parts.length >= 3) {
+                String subdomain = parts[0].toLowerCase().replaceAll("[^a-z0-9]", "");
+                tenantId = "tenant_" + subdomain;
+            }
+        }
+
+        // 2. Əgər subdomen yoxdursa, köhnə üsulla Header-ə də baxırıq (testlər üçün)
+        if (tenantId == null) {
+            String headerValue = httpRequest.getHeader(TENANT_HEADER);
+            if (headerValue != null && !headerValue.isEmpty()) {
+                tenantId = headerValue;
+            }
+        }
+
+        // 3. Konteksti təyin edirik
         if (tenantId != null) {
-            // Əgər başlıq tapıldısa, mərkəzi kontekstimizə (cari thread-in cibinə) yazırıq
             TenantContext.setCurrentTenant(tenantId);
         } else {
-            // Əgər başlıq yoxdursa, defolt olaraq ümumi ("public") sxem təyin edirik
             TenantContext.setCurrentTenant("public");
         }
 

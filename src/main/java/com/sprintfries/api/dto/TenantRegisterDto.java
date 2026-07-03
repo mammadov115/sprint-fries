@@ -10,4 +10,6 @@ import lombok.Setter;
 public class TenantRegisterDto {
     private String name;
     private String subdomain;
+    private String adminEmail;
+    private String adminPassword;
 }

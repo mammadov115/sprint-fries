@@ -22,9 +22,17 @@ public class TenantService {
     @Transactional
     public Tenant registerTenant(TenantRegisterDto dto) {
         
-        // DRF-dəki validation məntiqi: Subdomen yoxlanılır
+        // Validation: Subdomen yoxlanılır
         if (tenantRepository.findBySubdomain(dto.getSubdomain()).isPresent()) {
             throw new IllegalArgumentException("Bu subdomen artıq qeydiyyatdan keçib!");
+        }
+
+        if (dto.getAdminEmail() == null || dto.getAdminEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Admin email-i boş ola bilməz!");
+        }
+
+        if (dto.getAdminPassword() == null || dto.getAdminPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Admin şifrəsi boş ola bilməz!");
         }
 
         String targetSchema = "tenant_" + dto.getSubdomain().toLowerCase().replaceAll("[^a-z0-9]", "");
@@ -37,13 +45,22 @@ public class TenantService {
         tenant = tenantRepository.save(tenant);
 
         // 2. Verilənlər bazasında bu tenant üçün yeni isolated Şema (Schema) yaradırıq
-        // Raw SQL işlədirik. SQL Injection-dan qorunmaq üçün subdomen yuxarıda regex-dən keçib.
         jdbcTemplate.execute("CREATE SCHEMA " + targetSchema);
 
         // 3. Yeni yaradılan şemanın içinə əsas cədvəlləri quraşdırırıq.
-        // Hələlik struktur bəsit olduğu üçün, test məqsədli olaraq nümunə bir cədvəl yaradırıq.
-        // (Gələcəkdə bura Liquibase/Flyway və ya ddl-auto skriptləri inteqrasiya olunacaq).
-        jdbcTemplate.execute("CREATE TABLE " + targetSchema + ".users (id BIGSERIAL PRIMARY KEY, email VARCHAR(255) NOT NULL)");
+        // Gələcəkdə bura Liquibase/Flyway inteqrasiya olunacaq.
+        jdbcTemplate.execute("CREATE TABLE " + targetSchema + ".users (" +
+                "id BIGSERIAL PRIMARY KEY, " +
+                "email VARCHAR(255) NOT NULL UNIQUE, " +
+                "password VARCHAR(255) NOT NULL, " +
+                "full_name VARCHAR(255), " +
+                "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                ")");
+
+        // 4. İlk admin istifadəçisini yaradırıq
+        // JPA ilə şema keçidi etmək mürəkkəb ola bilər, ona görə birbaşa JDBC ilə daxil edirik.
+        jdbcTemplate.update("INSERT INTO " + targetSchema + ".users (email, password, full_name) VALUES (?, ?, ?)",
+                dto.getAdminEmail(), dto.getAdminPassword(), "Admin " + dto.getName());
 
         return tenant;
     }
