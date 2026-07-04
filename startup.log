@@ -67,3 +67,8 @@
 2026-07-03T20:46:49.013+04:00  INFO 43449 --- [SprintFries] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2026-07-03T20:46:49.013+04:00  INFO 43449 --- [SprintFries] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2026-07-03T20:46:49.014+04:00  INFO 43449 --- [SprintFries] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-07-03T21:58:08.741+04:00  INFO 43449 --- [SprintFries] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-07-03T21:58:08.759+04:00  INFO 43449 --- [SprintFries] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-07-03T21:58:08.767+04:00  INFO 43449 --- [SprintFries] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-03T21:58:08.770+04:00  INFO 43449 --- [SprintFries] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-07-03T21:58:08.773+04:00  INFO 43449 --- [SprintFries] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

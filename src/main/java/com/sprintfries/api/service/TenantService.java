@@ -5,6 +5,7 @@ import com.sprintfries.api.entity.Tenant;
 import com.sprintfries.api.repository.TenantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ public class TenantService {
     private final TenantRepository tenantRepository;
     // Spring-in yerli SQL işlətmək üçün olan alətidir, cursor execution kimidir.
     private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
     // Django-dakı @transaction.atomic dekoratorudur. 
     // Metod daxilində nəsə partlasa, bütün DB əməliyyatları rollback olunacaq.
@@ -54,13 +56,15 @@ public class TenantService {
                 "email VARCHAR(255) NOT NULL UNIQUE, " +
                 "password VARCHAR(255) NOT NULL, " +
                 "full_name VARCHAR(255), " +
+                "role VARCHAR(50) NOT NULL, " +
                 "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
                 ")");
 
         // 4. İlk admin istifadəçisini yaradırıq
-        // JPA ilə şema keçidi etmək mürəkkəb ola bilər, ona görə birbaşa JDBC ilə daxil edirik.
-        jdbcTemplate.update("INSERT INTO " + targetSchema + ".users (email, password, full_name) VALUES (?, ?, ?)",
-                dto.getAdminEmail(), dto.getAdminPassword(), "Admin " + dto.getName());
+        // Şifrəni mütləq şəkildə BCrypt ilə hash-ləyirik. İlk istifadəçi "Owner" rolunu alır.
+        String hashedPassword = passwordEncoder.encode(dto.getAdminPassword());
+        jdbcTemplate.update("INSERT INTO " + targetSchema + ".users (email, password, full_name, role) VALUES (?, ?, ?, ?)",
+                dto.getAdminEmail(), hashedPassword, "Admin " + dto.getName(), "Owner");
 
         return tenant;
     }
