@@ -57,7 +57,10 @@ public class TenantService {
                 "password VARCHAR(255) NOT NULL, " +
                 "full_name VARCHAR(255), " +
                 "role VARCHAR(50) NOT NULL, " +
-                "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                "failed_attempts INT NOT NULL DEFAULT 0, " +
+                "account_locked BOOLEAN NOT NULL DEFAULT FALSE, " +
+                "lock_time TIMESTAMP" +
                 ")");
 
         // 4. İlk admin istifadəçisini yaradırıq
